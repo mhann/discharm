@@ -1,4 +1,4 @@
-package discharm
+package main
 
 import "github.com/mhann/discharm/cmd"
 
