@@ -1,0 +1,33 @@
+{
+	"ImportPath": "github.com/mhann/discharm/cmd",
+	"GoVersion": "go1.7",
+	"GodepVersion": "v78",
+	"Deps": [
+		{
+			"ImportPath": "github.com/bwmarrin/discordgo",
+			"Comment": "v0.15.0",
+			"Rev": "5835676872d7fa65ee37b32672079c4ede2c1855"
+		},
+		{
+			"ImportPath": "github.com/gorilla/websocket",
+			"Comment": "v1.1.0-13-g2257eda",
+			"Rev": "2257eda00b2084c1351cd672aa5476daa9f5e463"
+		},
+		{
+			"ImportPath": "github.com/mhann/discharm/twitch",
+			"Rev": "cc6022150b0b229f772c63a3318c099ed2da043c"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/nacl/secretbox",
+			"Rev": "41d678d1df78cd0410143162dff954e6dc09300f"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/poly1305",
+			"Rev": "41d678d1df78cd0410143162dff954e6dc09300f"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/salsa20/salsa",
+			"Rev": "41d678d1df78cd0410143162dff954e6dc09300f"
+		}
+	]
+}

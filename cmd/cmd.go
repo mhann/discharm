@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"github.com/mhann/discharm/cmd/eventloops"
@@ -24,7 +24,7 @@ func initFlags() {
 /*
  * Entrypoint into the program.
  */
-func main() {
+func Run() {
 	log.Println("Initializing event loops")
 	log.Println("Initializing discord event loop")
 
