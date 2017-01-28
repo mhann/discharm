@@ -44,7 +44,7 @@ func RegisterTwitchListener(listener interface{}) {
 }
 
 func init() {
-	_discord, err := discordgo.New("marcus@hannmail.co.uk", "J@spercat")
+	_discord, err := discordgo.New("Bot MjczMTI0NjMxNjU2MDA1NjMz.C26-Ug.tZrN1HhotClAem-yQTlNsleKFbE")
 	if err != nil {
 		log.Fatalln("Could not connect to discord: ", err)
 	}
