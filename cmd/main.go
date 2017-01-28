@@ -1,8 +1,8 @@
 package main
 
 import (
-	"discharm/cmd/eventloops"
-	"discharm/cmd/handlers"
+	"github.com/mhann/discharm/cmd/eventloops"
+	"github.com/mhann/discharm/cmd/handlers"
 	"flag"
 	"github.com/bwmarrin/discordgo"
 	"log"

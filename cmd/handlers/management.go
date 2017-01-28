@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"discharm/cmd/eventloops"
+	"github.com/mhann/discharm/cmd/eventloops"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"log"

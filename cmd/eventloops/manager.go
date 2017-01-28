@@ -1,7 +1,7 @@
 package eventloops
 
 import (
-	"discharm/twitch"
+	"github.com/mhann/discharm/twitch"
 	"github.com/bwmarrin/discordgo"
 	"log"
 )
