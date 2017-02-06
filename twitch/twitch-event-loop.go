@@ -20,22 +20,6 @@ type eventHandlerInstance struct {
 	eventHandler EventHandler
 }
 
-// func (s *Session) addEventHandler(eventHandler EventHandler) func() {
-// 	s.handlersMu.Lock()
-// 	defer s.handlersMu.Unlock()
-
-// 	if s.handlers == nil {
-// 		s.handlers = map[string][]*eventHandlerInstance{}
-// 	}
-
-// 	ehi := &eventHandlerInstance{eventHandler}
-// 	s.handlers[eventHandler.Type()] = append(s.handlers[eventHandler.Type()], ehi)
-
-// 	return func() {
-// 		s.removeEventHandlerInstance(eventHandler.Type(), ehi)
-// 	}
-// }
-
 type checkChannel struct {
 	Name       string
 	LastStatus bool

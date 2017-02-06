@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"github.com/mhann/discharm/cmd/eventloops"
 	"github.com/bwmarrin/discordgo"
+	"github.com/mhann/discharm/cmd/eventloops"
 	"log"
 )
 
@@ -14,5 +14,7 @@ func init() {
 }
 
 func MessageCreateLog(s *discordgo.Session, m *discordgo.MessageCreate) {
-	log.Printf("%20s %20s > %s\n", m.ChannelID, m.Author.Username, m.Content)
+	if "273124631656005633" != m.Author.ID {
+		log.Printf("%20s %20s > %s\n", m.ChannelID, m.Author.Username, m.Content)
+	}
 }

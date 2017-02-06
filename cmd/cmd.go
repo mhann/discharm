@@ -33,6 +33,8 @@ func Run() {
 	log.Println("Starting discord event loop")
 
 	log.Println("Bot is now running.  Press CTRL-C to exit.")
+	
+	// HORRIBLE! Workaround to allow us to inclue handlers (and therefore run their init functions)
 	handlers.DummyFunction()
 
 	eventloops.StartLoops()

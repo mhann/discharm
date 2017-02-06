@@ -1,10 +1,11 @@
 package handlers
 
 import (
-	"github.com/mhann/discharm/cmd/eventloops"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"github.com/mhann/discharm/cmd/eventloops"
 	"log"
+	"runtime"
 	"strings"
 )
 
@@ -13,6 +14,7 @@ import (
  */
 func init() {
 	eventloops.RegisterDiscordListener(ManagementStatus)
+	eventloops.RegisterDiscordListener(PingPing)
 }
 
 /*
@@ -28,6 +30,15 @@ func ManagementStatus(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(m.ChannelID, "Discord Status:")
 		s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Shard: %d", s.ShardID))
 		s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Shard Count: %d", s.ShardCount))
-		s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Uptime: %d", s.ShardCount))
+		s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Go Version: %s", runtime.Version()))
+		memstats := runtime.MemStats{}
+		runtime.ReadMemStats(&memstats)
+		s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Memory Allocated (mb): %.2f", float64(memstats.Alloc)/1024/1024))
+	}
+}
+
+func PingPing(s *discordgo.Session, m *discordgo.MessageCreate) {
+	if strings.HasPrefix(m.Message.Content, "!ping") {
+		s.ChannelMessageSend(m.ChannelID, "pong")
 	}
 }

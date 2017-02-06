@@ -1,8 +1,8 @@
 package eventloops
 
 import (
-	"github.com/mhann/discharm/twitch"
 	"github.com/bwmarrin/discordgo"
+	"github.com/mhann/discharm/twitch"
 	"log"
 )
 
@@ -19,6 +19,8 @@ func StartLoops() {
 	if err != nil {
 		log.Fatalln("Could not connect to discord: ", err)
 	}
+
+	Run()
 }
 
 func GetDiscordSession() *discordgo.Session {
@@ -32,6 +34,11 @@ func GetDiscordSession() *discordgo.Session {
 func RegisterDiscordListener(listener interface{}) {
 	// 	queuedDiscordListeners = append(queuedDiscordListeners, listener)
 	discord.AddHandler(listener)
+}
+
+func RegisterTimerListener(Callback callback, period float64) {
+	// 	queuedDiscordListeners = append(queuedDiscordListeners, listener)
+	RegisterTimer(Callback, period)
 }
 
 /*
@@ -52,19 +59,4 @@ func init() {
 	discord = _discord
 
 	log.Println("Discord event loop successfully initialized")
-	// 	registerQueuedHandlers()
 }
-
-// func registerQueuedHandlers() {
-// 	log.Println("Registering discord event handlers")
-// 	for handler := range queuedDiscordListeners {
-// 		log.Println("Registering a discord event handler")
-// 		discord.AddHandler(handler)
-// 	}
-
-// 	log.Println("Registing twitch event handlers")
-// 	for handler := range queuedTwitchListeners {
-// 		log.Println("Registering a twitch event handler")
-// 		discord.AddHandler(handler)
-// 	}
-// }

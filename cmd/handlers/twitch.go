@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"github.com/mhann/discharm/cmd/eventloops"
-	"github.com/mhann/discharm/twitch"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"github.com/mhann/discharm/cmd/eventloops"
+	"github.com/mhann/discharm/twitch"
 	"log"
 )
 
@@ -18,6 +18,9 @@ func init() {
 	twitch.RegisterChannelOnlineCheck("mrsyncz")
 }
 
+/*
+ * Called whenever a twitch channel that is checked (see RegisterChannelOnlineCheck above) goes online.
+ */
 func ChannelLive(channel *twitch.ChannelOnline) {
 	discord := eventloops.GetDiscordSession()
 	log.Println("Twitch channel has come online!")
@@ -37,6 +40,9 @@ func ChannelLive(channel *twitch.ChannelOnline) {
 	discord.ChannelMessageSendEmbed("188699044456038400", embed)
 }
 
+/*
+ * Called whenever a twitch channel that is checked (see RegisterChannelOnlineCheck above) goes offline.
+ */
 func ChannelOffline(channel *twitch.ChannelOffline) {
 	discord := eventloops.GetDiscordSession()
 	log.Println("Twitch channel has come offline!")
