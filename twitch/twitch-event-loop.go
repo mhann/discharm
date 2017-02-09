@@ -82,7 +82,6 @@ func RegisterHandler(handler interface{}) func() {
 }
 
 func addEventHandler(eventHandler EventHandler) func() {
-	log.Println("Adding a twitch event handler")
 	log.Println("Handler is for type:")
 	ehi := &eventHandlerInstance{eventHandler}
 
@@ -132,10 +131,26 @@ func checkTwitchStream(channelName string) twitchStreamChannel {
 }
 
 func RegisterChannelOnlineCheck(channelName string) {
-	channel := checkChannel{}
-	channel.Name = channelName
-	channel.FirstCheck = true
-	channels = append(channels, &channel)
+	log.Printf("Possibly registering channel online check for '%s'", channelName)
+	if !isChannelRegistered(channelName) {
+		log.Printf("Channel %s not already registered, registering")
+		channel := checkChannel{}
+		channel.Name = channelName
+		channel.FirstCheck = true
+		channels = append(channels, &channel)
+	} else {
+		log.Printf("Channel %s already registered, not registering")
+	}
+}
+
+func isChannelRegistered(channelName string) bool {
+	for _, channel := range channels {
+		if channel.Name == channelName {
+			return true
+		}
+	}
+
+	return false
 }
 
 func mainLoop() {

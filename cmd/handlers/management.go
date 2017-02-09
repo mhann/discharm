@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"github.com/mhann/discharm/cmd/afterinit"
 	"github.com/mhann/discharm/cmd/eventloops"
 	"log"
 	"runtime"
@@ -13,6 +14,10 @@ import (
  * Called automatically by go when this file is included.
  */
 func init() {
+	afterinit.RegisterAfterInitializationFunction(ManagementRegisterListeners)
+}
+
+func ManagementRegisterListeners() {
 	eventloops.RegisterDiscordListener(ManagementStatus)
 	eventloops.RegisterDiscordListener(PingPing)
 }

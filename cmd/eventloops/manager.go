@@ -3,6 +3,7 @@ package eventloops
 import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/mhann/discharm/twitch"
+	"github.com/spf13/viper"
 	"log"
 )
 
@@ -50,8 +51,9 @@ func RegisterTwitchListener(listener interface{}) {
 	twitch.RegisterHandler(listener)
 }
 
-func init() {
-	_discord, err := discordgo.New("Bot MjczMTI0NjMxNjU2MDA1NjMz.C26-Ug.tZrN1HhotClAem-yQTlNsleKFbE")
+func ConnectToDiscord() {
+	log.Printf("Connecting to discord with bot id: '%s'\n", viper.GetString("BotID"))
+	_discord, err := discordgo.New(viper.GetString("BotID"))
 	if err != nil {
 		log.Fatalln("Could not connect to discord: ", err)
 	}

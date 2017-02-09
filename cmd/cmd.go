@@ -1,10 +1,11 @@
 package cmd
 
 import (
-	"github.com/mhann/discharm/cmd/eventloops"
-	"github.com/mhann/discharm/cmd/handlers"
 	"flag"
 	"github.com/bwmarrin/discordgo"
+	"github.com/mhann/discharm/cmd/afterinit"
+	"github.com/mhann/discharm/cmd/eventloops"
+	"github.com/mhann/discharm/cmd/handlers"
 	"log"
 )
 
@@ -25,19 +26,15 @@ func initFlags() {
  * Entrypoint into the program.
  */
 func Run() {
-	log.Println("Initializing event loops")
-	log.Println("Initializing discord event loop")
-
-	log.Println("Discord event loop successfully initialized")
-
-	log.Println("Starting discord event loop")
-
 	log.Println("Bot is now running.  Press CTRL-C to exit.")
-	
+
 	// HORRIBLE! Workaround to allow us to inclue handlers (and therefore run their init functions)
 	handlers.DummyFunction()
 
+	eventloops.ConnectToDiscord()
 	eventloops.StartLoops()
+
+	afterinit.RunAfterInitializationFunctions()
 
 	// Simple way to keep program running until CTRL-C is pressed.
 	<-make(chan struct{})

@@ -2,14 +2,16 @@ package handlers
 
 import (
 	"github.com/bwmarrin/discordgo"
+	"github.com/mhann/discharm/cmd/afterinit"
 	"github.com/mhann/discharm/cmd/eventloops"
 	"log"
 )
 
-/*
- * Called automatically by go when this file is included.
- */
 func init() {
+	afterinit.RegisterAfterInitializationFunction(LoggingRegisterListeners)
+}
+
+func LoggingRegisterListeners() {
 	eventloops.RegisterDiscordListener(MessageCreateLog)
 }
 
