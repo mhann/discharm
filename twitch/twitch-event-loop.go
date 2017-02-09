@@ -133,13 +133,13 @@ func checkTwitchStream(channelName string) twitchStreamChannel {
 func RegisterChannelOnlineCheck(channelName string) {
 	log.Printf("Possibly registering channel online check for '%s'", channelName)
 	if !isChannelRegistered(channelName) {
-		log.Printf("Channel %s not already registered, registering")
+		log.Printf("Channel %s not already registered, registering", channelName)
 		channel := checkChannel{}
 		channel.Name = channelName
 		channel.FirstCheck = true
 		channels = append(channels, &channel)
 	} else {
-		log.Printf("Channel %s already registered, not registering")
+		log.Printf("Channel %s already registered, not registering", channelName)
 	}
 }
 
