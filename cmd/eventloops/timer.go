@@ -1,6 +1,7 @@
 package eventloops
 
 import (
+	"log"
 	"time"
 )
 
@@ -22,6 +23,7 @@ func RegisterTimer(Callback callback, period float64) {
 	handler.Period = period
 	handler.LastTrigger = time.Now()
 	handlers = append(handlers, &handler)
+	log.Printf("Registerd timer with period %d", period)
 }
 
 func mainLoop() {

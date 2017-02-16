@@ -21,9 +21,10 @@ type eventHandlerInstance struct {
 }
 
 type checkChannel struct {
-	Name       string
-	LastStatus bool
-	FirstCheck bool
+	Name             string
+	LastStatus       bool
+	FirstCheck       bool
+	LastStatusChange time.Time
 }
 
 type twitchChannel struct {
@@ -158,36 +159,39 @@ func mainLoop() {
 		for _, channel := range channels {
 			twitchStreamChannelInstance := checkTwitchStream(channel.Name)
 
-			if twitchStreamChannelInstance.Stream != nil && channel.LastStatus != true {
+			if time.Since(channel.LastStatusChange) > 5*time.Minute {
+				if twitchStreamChannelInstance.Stream != nil && channel.LastStatus != true {
+					channelOnlineInstance := &ChannelOnline{}
+					channelOnlineInstance.Channel = twitchStreamChannelInstance
+					channelOnlineInstance.Name = channel.Name
 
-				channelOnlineInstance := &ChannelOnline{}
-				channelOnlineInstance.Channel = twitchStreamChannelInstance
-				channelOnlineInstance.Name = channel.Name
+					log.Printf("Channel '%s' has gone from offline to online", channel.Name)
+					if !channel.FirstCheck {
+						log.Printf("This is not the first check of channel '%s' - notifying", channel.Name)
+						handle(channelOnlineEventType, channelOnlineInstance)
+					}
 
-				log.Printf("Channel '%s' has gone from offline to online", channel.Name)
-				if !channel.FirstCheck {
-					log.Printf("This is not the first check of channel '%s' - notifying", channel.Name)
-					handle(channelOnlineEventType, channelOnlineInstance)
+					channel.LastStatus = true
+					channel.LastStatusChange = time.Now()
+				} else if twitchStreamChannelInstance.Stream == nil && channel.LastStatus != false {
+
+					channelOfflineInstance := &ChannelOffline{}
+					channelOfflineInstance.Channel = twitchStreamChannelInstance
+					channelOfflineInstance.Name = channel.Name
+
+					log.Printf("Channel '%s' has gone from online to offline", channel.Name)
+					if !channel.FirstCheck {
+						log.Printf("This is not the first check of channel '%s' - notifying", channel.Name)
+						handle(channelOfflineEventType, channelOfflineInstance)
+					}
+					channel.LastStatus = false
+					channel.LastStatusChange = time.Now()
 				}
 
-				channel.LastStatus = true
-			} else if twitchStreamChannelInstance.Stream == nil && channel.LastStatus != false {
-
-				channelOfflineInstance := &ChannelOffline{}
-				channelOfflineInstance.Channel = twitchStreamChannelInstance
-				channelOfflineInstance.Name = channel.Name
-
-				log.Printf("Channel '%s' has gone from online to offline", channel.Name)
-				if !channel.FirstCheck {
-					log.Printf("This is not the first check of channel '%s' - notifying", channel.Name)
-					handle(channelOfflineEventType, channelOfflineInstance)
+				if channel.FirstCheck {
+					log.Printf("Completed first check for '%s'", channel.Name)
+					channel.FirstCheck = false
 				}
-				channel.LastStatus = false
-			}
-
-			if channel.FirstCheck {
-				log.Printf("Completed first check for '%s'", channel.Name)
-				channel.FirstCheck = false
 			}
 
 			time.Sleep(1000 * time.Millisecond)

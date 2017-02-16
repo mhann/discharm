@@ -13,6 +13,7 @@ import (
 	"math/rand"
 	"net/http"
 	"strings"
+	"sync"
 )
 
 type Trivia struct {
@@ -20,6 +21,7 @@ type Trivia struct {
 	Scores          map[string]int
 	QuestionLineup  []question
 	CurrentQuestion question
+	Mutex           *sync.Mutex
 }
 
 type opentdbResponse struct {
@@ -99,12 +101,14 @@ func startTrivia(s *discordgo.Session, m *discordgo.MessageCreate) {
 	trivia.Channel = m.ChannelID
 	trivia.Scores = make(map[string]int)
 	trivia.QuestionLineup = getQuestions(10).Results
+	trivia.Mutex = &sync.Mutex{}
 	runningTrivias[trivia.Channel] = &trivia
 	sendNextTriviaQuestion(s, m.ChannelID)
 }
 
 func processAnswer(discordsession *discordgo.Session, channelID string, answer string, user *discordgo.User) {
 	if trivia, ok := runningTrivias[channelID]; ok {
+		trivia.Mutex.Lock()
 		question := trivia.CurrentQuestion
 		log.Printf(">  Incorrect answers at process answer: %d", len(question.IncorrectAnswers))
 		printArrayOfStrings(question.IncorrectAnswers)
@@ -125,6 +129,7 @@ func processAnswer(discordsession *discordgo.Session, channelID string, answer s
 			discordsession.ChannelMessageSend(channelID, "Incorrect!")
 			sendNextTriviaQuestion(discordsession, channelID)
 		}
+		trivia.Mutex.Unlock()
 	}
 }
 
@@ -221,7 +226,7 @@ func getQuestions(count int) opentdbResponse {
 	var response opentdbResponse
 	respBuf, _ := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatalln("Error decoding json: ", err)
+		log.Fatalln("Error getting tvdb response: ", err)
 	}
 
 	// log.Println(string(respBuf))
