@@ -107,8 +107,9 @@ func startCountdown(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	parsedLayout, err := time.Parse(viper.GetString("UserEnteredDateFormat"), countdownEnd)
 	if err != nil {
-		s.ChannelMessageSend(m.ChannelID, "Please make sure that the date you put was in the format: DD/MM/YYYY-HH:MM:SS")
+		s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Please make sure that the date you put was in the format: %s", viper.GetString("UserEnteredDateFormat")))
 		log.Printf("Error parsing date: %s", err)
+		return
 	}
 
 	newCountdown := Countdown{}
@@ -119,6 +120,7 @@ func startCountdown(s *discordgo.Session, m *discordgo.MessageCreate) {
 	newCountdown.End = parsedLayout
 	newCountdown.LastNotify = time.Now()
 	countdowns[newCountdown.Id] = &newCountdown
+	s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Countdown has been registered with id %d", newCountdown.Id))
 }
 
 /*
@@ -127,7 +129,7 @@ func startCountdown(s *discordgo.Session, m *discordgo.MessageCreate) {
 func printCountdownHelp(s *discordgo.Session, m *discordgo.MessageCreate) {
 	HelpMessage := "```" +
 		"Discharm countdown usage: \n" +
-		"   - Add countdowns   - !countdown start <channel-id> <message> <countdown-end> \n" +
+		"   - Add countdowns   - !countdown start <channel-id> <message> <period> <countdown-end> \n" +
 		"   - View countdowns  - !countdown list \n" +
 		"   - Get Help         - !countdown help \n" +
 		"   - Delete Countdown - !countdown delete <id>" +
@@ -140,8 +142,10 @@ func printCountdownHelp(s *discordgo.Session, m *discordgo.MessageCreate) {
  * Checks all countdowns for any needed notifications
  */
 func TimerListener() {
+	log.Printf("Checking for countdowns")
 	// In here, we will check all countdowns to check for any needed notifications
 	for key, countdown := range countdowns {
+		log.Printf("countdown found")
 		if time.Since(countdown.End) > 0 {
 			delete(countdowns, key)
 			return

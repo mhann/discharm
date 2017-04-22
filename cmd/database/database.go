@@ -4,7 +4,9 @@ import (
 	"database/sql"
 	_ "github.com/lib/pq"
 	"log"
+	"github.com/spf13/viper"
 	"sync"
+	"fmt"
 )
 
 var (
@@ -27,7 +29,12 @@ func GetConnection() *sql.DB {
 }
 
 func connectToDb() *sql.DB {
-	db, err := sql.Open("postgres", "user=discharm dbname=discharm password=J@spercat")
+	user := viper.GetString("DatabaseUsername")
+	password := viper.GetString("DatabasePassword")
+	name := viper.GetString("DatabaseName")
+	host := viper.GetString("DatabaseHost")
+	
+	db, err := sql.Open("postgres", fmt.Sprintf("user=%s dbname=%s password=%s host=%s", user, name, password, host))
 	if err != nil {
 		log.Println("Unable to connect to database")
 		log.Println(err)

@@ -71,7 +71,7 @@ func handleTimeoutMessage(s *discordgo.Session, m *discordgo.MessageCreate) {
 }
 
 func processTimeoutRequest(s *discordgo.Session, m *discordgo.MessageCreate) {
-	db = database.GetConnection()
+	db := database.GetConnection()
 	commandParts := strings.Fields(m.Message.Content)
 
 	/*
@@ -187,7 +187,7 @@ func canUserTimeout(s *discordgo.Session, user *discordgo.User, channel_id strin
 }
 
 func isUserTimedout(user *discordgo.User, channel_id string) (bool, error) {
-	db = database.GetConnection()
+	db := database.GetConnection()
 
 	rows, err := db.Query("SELECT created, length_seconds FROM timeouts WHERE target_user_id = $1 AND known_expired != true AND guild_id = $2", user.ID, channel_id)
 	if err != nil {
