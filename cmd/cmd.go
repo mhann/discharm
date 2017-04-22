@@ -5,7 +5,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/mhann/discharm/cmd/afterinit"
 	"github.com/mhann/discharm/cmd/eventloops"
-	"github.com/mhann/discharm/cmd/handlers"
+	_ "github.com/mhann/discharm/cmd/handlers"
 	"log"
 )
 
@@ -28,8 +28,13 @@ func initFlags() {
 func Run() {
 	log.Println("Bot is now running.  Press CTRL-C to exit.")
 
-	// HORRIBLE! Workaround to allow us to inclue handlers (and therefore run their init functions)
-	handlers.DummyFunction()
+	// /*
+	//  * HORRIBLE! Workaround to allow us to inclue handlers (and therefore run their init functions)
+	//  *   This is because go won't let us include without using - even though we ARE using init functions.
+	//  *   It may be able to be achieved using _ <import> above - see here:
+	//  *     http://stackoverflow.com/questions/21220077/what-does-an-underscore-in-front-of-an-import-statement-mean-in-golang
+	//  */
+	// handlers.DummyFunction()
 
 	eventloops.ConnectToDiscord()
 	eventloops.StartLoops()

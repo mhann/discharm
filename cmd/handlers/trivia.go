@@ -2,9 +2,11 @@ package handlers
 
 import (
 	"bytes"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/mhann/discharm/cmd/afterinit"
 	"github.com/mhann/discharm/cmd/eventloops"
 	"html"
@@ -17,7 +19,9 @@ import (
 )
 
 type Trivia struct {
+	Id              int
 	Channel         string
+	Test            int
 	Scores          map[string]int
 	QuestionLineup  []question
 	CurrentQuestion question
@@ -40,7 +44,31 @@ type question struct {
 
 var (
 	runningTrivias map[string]*Trivia
+	db             *sql.DB
 )
+
+func getRunningTrivias() ([]*Trivia, error) {
+	log.Println("Getting running trivias from the database")
+	rows, err := db.Query("select Id, Channel, CurrentQuestion from Trivia")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	runningTrivias := []*Trivia{}
+
+	for rows.Next() {
+		runningTrivia := Trivia{}
+		err := rows.Scan(&runningTrivia.Id, &runningTrivia.Channel, &runningTrivia.Test)
+		if err != nil {
+			return nil, err
+		}
+		log.Printf("%s", runningTrivia.Channel)
+		runningTrivias = append(runningTrivias, &runningTrivia)
+	}
+
+	return runningTrivias, nil
+}
 
 /*
  * Called automatically by go when this file is included.
@@ -53,6 +81,23 @@ func TriviaRegisterListeners() {
 	// 	eventloops.RegisterTimerListener(timer, 10)
 	eventloops.RegisterDiscordListener(discordMessage)
 	runningTrivias = make(map[string]*Trivia)
+
+	localDb, err := sql.Open("mysql", "root:J@spercat@tcp(127.0.0.1:3306)/discharmdev")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = localDb.Ping()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	db = localDb
+
+	_, err = getRunningTrivias()
+	if err != nil {
+		log.Fatalln(err)
+	}
 }
 
 func discordMessage(s *discordgo.Session, m *discordgo.MessageCreate) {

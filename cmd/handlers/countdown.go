@@ -97,6 +97,7 @@ func startCountdown(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	if !validChannelId {
 		s.ChannelMessageSend(m.ChannelID, "Please make sure that the channel id is 18 numbers")
+		return
 	}
 
 	periodInt, err := strconv.Atoi(periodString)
