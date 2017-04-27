@@ -55,6 +55,35 @@ func CountdownRegisterListeners() {
  *   - Delete Countdown - !countdown delete <id>
  */
 func DiscordCountdownCommand(s *discordgo.Session, m *discordgo.MessageCreate) {
+
+	if strings.Contains(strings.ToLower(m.Message.Content), "yawn") && !strings.Contains(strings.ToLower(m.Message.Content), "terrible") {
+		HelpMessage := `The yawn scale
+1/10 low scale:
+1-terrible yawn
+2-horrible yawn
+3-very bad yawn
+4-bad yawn
+5-ok yawn 
+6-a good yawn
+7-a very good yawn 
+8-great yawn 
+9-awesome yawn 
+10- tremendously awesome yawn 
+
+ 11/20 or 1/10 also known as the yawn-gasm scale:
+1-one of the best yawns
+2-fabulous yawn 
+3-awesome yawn
+4-one of the greatest yawns 
+5-one of the awesomest yawns
+6-on of the ones amazing yawns
+7-an absolutely amazing yawn 
+8-the greates team in the country
+9-the greatest yawn on the face  of the plante
+10-the most amazing yawn in the multiverse`
+		s.ChannelMessageSend(m.ChannelID, HelpMessage)
+	}
+
 	if strings.HasPrefix(m.Message.Content, "!countdown") {
 		if strings.HasPrefix(m.Message.Content, "!countdown start") {
 			startCountdown(s, m)
@@ -64,7 +93,7 @@ func DiscordCountdownCommand(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 		} else if strings.HasPrefix(m.Message.Content, "!countdown help") {
 			printCountdownHelp(s, m)
-		} else if strings.ToLower().Contains("yawn") {
+		} else if strings.Contains(strings.ToLower(m.Message.Content), "yawn") {
 			HelpMessage := `The yawn scale
 1/10 low scale:
 1-terrible yawn
